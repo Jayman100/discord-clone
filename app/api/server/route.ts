@@ -7,10 +7,13 @@ import { MemberRole } from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
+    // console.log(typeof req.body);
     const { name, imageUrl } = await req.json();
-    const profile: any = currentProfile();
+    const profile: any = await currentProfile();
 
-    if (!profile) new NextResponse("Unauthorised", { status: 401 });
+    if (!profile) return new NextResponse("Unauthorised", { status: 401 });
+
+    // console.log("profilee: ", profile);
 
     const server = await db.server.create({
       data: {
@@ -26,6 +29,8 @@ export async function POST(req: Request) {
         },
       },
     });
+
+    // return NextResponse.json({ name, imageUrl });
 
     return NextResponse.json(server);
   } catch (error) {
