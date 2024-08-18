@@ -7,7 +7,6 @@ import { MemberRole } from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
-    // console.log(typeof req.body);
     const { name, imageUrl } = await req.json();
     const profile: any = await currentProfile();
 
