@@ -16,6 +16,8 @@ const InviteCodePage = async ({ params }: inviteCodePageProps) => {
 
   if (!params.inviteCode) return redirect("/");
 
+  // If the user looding the link is already in the server
+
   const existingServer = await db.server.findFirst({
     where: {
       inviteCode: params.inviteCode,
@@ -29,6 +31,7 @@ const InviteCodePage = async ({ params }: inviteCodePageProps) => {
 
   if (existingServer) return redirect(`/server/${existingServer.id}`);
 
+  //Create new member if the person loading the link is not a member of the server
   const server = await db.server.update({
     where: {
       inviteCode: params.inviteCode,
