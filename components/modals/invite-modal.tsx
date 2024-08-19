@@ -39,8 +39,6 @@ const InviteModal = () => {
         `/api/servers/${server?.id}/invite-code`
       );
 
-      console.log(response);
-
       onOpen("invite", { server: response.data });
     } catch (error) {
       console.log(error);
