@@ -5,6 +5,7 @@ import { ChannelType, MemberRole } from "@prisma/client";
 import ActionTooptip from "../action-tooltip";
 import { Plus, Settings } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
+import { channel } from "diagnostics_channel";
 
 interface ServerSectionProps {
   label: string;
@@ -31,7 +32,7 @@ const ServerSection = ({
       {role !== MemberRole.GUEST && sectionType === "channels" && (
         <ActionTooptip label="Create channel">
           <button
-            onClick={() => onOpen("createChannel")}
+            onClick={() => onOpen("createChannel", { channelType })}
             className="text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
           >
             <Plus className="h-4 w-4" />
