@@ -5,6 +5,7 @@ import { Channel, ChannelType, MemberRole, Server } from "@prisma/client";
 import { Edit, Hash, Lock, Mic, Trash, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import ActionTooptip from "../action-tooltip";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ServerChannelProps {
   channel: Channel;
@@ -21,14 +22,13 @@ const iconMap = {
 const ServerChannel = ({ channel, server, role }: ServerChannelProps) => {
   const params = useParams();
   const router = useRouter();
+  const { onOpen } = useModal();
 
   const Icon = iconMap[channel.type];
 
   return (
     <button
-      onClick={() => {
-        router.push(`/server/${params.serverId}/channels/${channel.id}`);
-      }}
+      onClick={() => {}}
       className={cn(
         "group px-2 py-2 flex items-center rounded-md gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1",
         params?.channelId === channel.id && "bg-zinc-700/20 dark:bg-zinc-700"
@@ -48,11 +48,21 @@ const ServerChannel = ({ channel, server, role }: ServerChannelProps) => {
       {channel.name !== "general" && role !== MemberRole.GUEST && (
         <div className="ml-auto flex items-center gap-x-2">
           <ActionTooptip label="Edit">
-            <Edit className="hidden group-hover:block  h-4 2-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition" />
+            <Edit
+              onClick={() => {
+                onOpen("editChannel", { channel, server });
+              }}
+              className="hidden group-hover:block  h-4 2-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
+            />
           </ActionTooptip>
 
           <ActionTooptip label="Delete">
-            <Trash className="hidden group-hover:block  h-4 2-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition" />
+            <Trash
+              onClick={() => {
+                onOpen("deleteChannel", { channel, server });
+              }}
+              className="hidden group-hover:block  h-4 2-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
+            />
           </ActionTooptip>
         </div>
       )}
