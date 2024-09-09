@@ -1,6 +1,7 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 interface ServerIdPageProps {
   params: { serverId: string };
@@ -20,11 +21,28 @@ const ServerIdPage = async ({ params }: ServerIdPageProps) => {
         },
       },
     },
+
+    include: {
+      channels: {
+        where: {
+          name: "general",
+        },
+
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
   });
 
-  console.log(server);
+  const initailChannel = server?.channels.find(
+    (channel) => channel.name === "general"
+  );
 
-  return <div>This is the server page</div>;
+  if (server)
+    return redirect(
+      `/server/${params?.serverId}/channels/${initailChannel?.id}`
+    );
 };
 
 export default ServerIdPage;
