@@ -39,7 +39,7 @@ const ServerMember = ({ member, server }: ServerMemberProps) => {
     >
       <UserAvatar
         src={member.profile.imageUrl}
-        className="h-6 w-6 max-md:h-8 max-md:w-8"
+        avatarClassName="h-6 w-6 max-md:h-8 max-md:w-8"
       />
 
       <p
