@@ -18,7 +18,7 @@ export const useChatQuery = ({
 }: ChatQueryProps) => {
   const { isConnected } = useSocket();
 
-  //? pageParam => need for infinite scroll , data will fetch dynamically when we scroll to an extent
+  //? pageParam => need for infinite scroll , data will fetch dynamically when we scroll to an extent or click a button to load more..
 
   const fetchMessages = async ({ pageParam = undefined }) => {
     const url = qs.stringifyUrl(
@@ -32,8 +32,6 @@ export const useChatQuery = ({
       { skipNull: true }
     );
 
-    //     const url = `${apiUrl}?${paramKey}=${paramValue}&cursor=${pageParam}`;
-    console.log(url, "url");
     const res = await fetch(url);
 
     return res.json();

@@ -17,7 +17,6 @@ export async function GET(req: Request) {
     if (!profile) return new NextResponse("Unauthorised", { status: 401 });
     if (!channelId)
       return new NextResponse("Channel ID is missing", { status: 400 });
-    //     if (!cursor) return new NextResponse("Cursor is missing", { status: 400 });
 
     let messages: Message[] = [];
 
