@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 
 import { FormControl, Form, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ChatItemProps {
   id: string;
@@ -55,6 +57,7 @@ const ChatItem = ({
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { onOpen } = useModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,9 +77,35 @@ const ChatItem = ({
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
 
-  const onSubmit = (values) => {
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const url = qs.stringifyUrl({
+        url: `${socketUrl}/${id}`,
+        query: socketQuery,
+      });
+
+      await axios.patch(url, values);
+      form.reset();
+      setIsEditing(false);
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log(values, "values");
   };
+
+  useEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.keyCode === 27) {
+        setIsEditing(false);
+      }
+    };
+    document.addEventListener("keydown", close);
+
+    return () => document.removeEventListener("keydown", close);
+  }, []);
 
   useEffect(() => {
     form.reset({
@@ -165,6 +194,7 @@ const ChatItem = ({
                         <div className="relative w-full">
                           <Input
                             {...field}
+                            disabled={isLoading}
                             className="p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                             placeholder="Edited message"
                           />
@@ -173,7 +203,13 @@ const ChatItem = ({
                     </FormItem>
                   )}
                 />
+                <Button disabled={isLoading} size="sm" variant="primary">
+                  Save
+                </Button>
               </form>
+              <span className="text=[10px] mt-1 text-zinc-400">
+                Press escape to cancel, enter to save
+              </span>
             </Form>
           )}
         </div>
@@ -189,7 +225,15 @@ const ChatItem = ({
             </ActionTooptip>
           )}
           <ActionTooptip label="Delete">
-            <Trash className="h-4 w-4 cursor-pointer ml-auto text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+            <Trash
+              onClick={() =>
+                onOpen("deleteMessage", {
+                  apiUrl: `${socketUrl}/${id}`,
+                  query: socketQuery,
+                })
+              }
+              className="h-4 w-4 cursor-pointer ml-auto text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
+            />
           </ActionTooptip>
         </div>
       )}
