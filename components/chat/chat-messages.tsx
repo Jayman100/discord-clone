@@ -7,6 +7,8 @@ import { Loader2, ServerCrash } from "lucide-react";
 import { Fragment } from "react";
 import ChatItem from "./chat-item";
 import { format } from "date-fns";
+import { MessagesWithMemberWithProfile } from "@/types";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 const DATE_FORMAT = "d MMM yyy, HH:mm";
 
@@ -22,12 +24,6 @@ interface ChatMessagesProps {
   type: "channel" | "conversation";
 }
 
-type MessagesWithMemberWithProfile = Message & {
-  member: Member & {
-    profile: Profile;
-  };
-};
-
 const ChatMessages = ({
   name,
   member,
@@ -40,6 +36,8 @@ const ChatMessages = ({
   type,
 }: ChatMessagesProps) => {
   const queryKey = `chat:${chatId}`;
+  const updateKey = `chat:${chatId}:messages:update`;
+  const addKey = `chat:${chatId}:messages`;
 
   const { data, hasNextPage, isFetchingNextPage, status, fetchNextPage } =
     useChatQuery({
@@ -48,6 +46,8 @@ const ChatMessages = ({
       paramKey,
       paramValue,
     });
+
+  useChatSocket({ queryKey, addKey, updateKey });
 
   if (status === "loading") {
     return (

@@ -42,7 +42,7 @@ export const useChatQuery = ({
       queryKey: [queryKey],
       queryFn: fetchMessages,
       getNextPageParam: (lastPage) => lastPage?.nextCursor,
-      refetchInterval: isConnected ? false : 1000, // in case the socket poling fails
+      refetchInterval: isConnected ? false : 1000, // in case the socket poling failslo7uyjhn
     });
 
   return { data, fetchNextPage, hasNextPage, isFetchingNextPage, status };
