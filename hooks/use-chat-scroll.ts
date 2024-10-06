@@ -47,7 +47,6 @@ export const useChatScroll = ({
       const distanceFromBottom =
         topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight;
 
-      console.log("scroll down");
       return distanceFromBottom <= 100;
     };
 
