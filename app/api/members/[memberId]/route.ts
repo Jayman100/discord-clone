@@ -76,7 +76,7 @@ export async function PATCH(
       return new NextResponse("Server Id is missing", { status: 400 });
 
     if (!params.memberId)
-      return new NextResponse("Member Id is missing"), { status: 400 };
+      return new NextResponse("Member Id is missing", { status: 400 });
 
     const server = await db.server.update({
       where: {
